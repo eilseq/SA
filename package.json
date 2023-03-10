@@ -1,0 +1,17 @@
+{
+  "name": "sa2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "EILSEQ",
+  "license": "All Rights Reserved",
+  "dependencies": {
+    "seedrandom": "^3.0.5",
+    "three": "^0.150.1"
+  },
+  "volta": {
+    "node": "19.7.0"
+  },
+  "devDependencies": {
+    "vite-plugin-zip-pack": "^1.0.5"
+  }
+}
