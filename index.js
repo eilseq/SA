@@ -12,8 +12,8 @@ import { makeL233 } from "./src/shaders/l233";
 import { makeWave } from "./src/shaders/wave";
 
 setContainer(document.body);
-setSize(3000, 3000);
-// setSize(window.innerWidth, window.innerHeight);
+// setSize(3000, 3000);
+setSize(window.innerWidth, window.innerHeight);
 
 function onLoad(texture) {
   const pipeline = [new TexturePass(texture)];
@@ -26,28 +26,29 @@ function onLoad(texture) {
     const materialSA2 = makeSA2();
     pipeline.push(materialSA2);
 
-    // setInterval(() => {
-    //   const speed = 0.0001;
-    //   const { uniforms } = materialSA2;
-    //   uniforms.T.value += speed;
-    //   uniforms.magnitudeRed.value += speed % 255;
-    //   uniforms.magnitudeGreen.value += speed % 255;
-    //   uniforms.magnitudeBlue.value += speed % 255;
-    // }, 4 / 30);
+    setInterval(() => {
+      const speed = 0.0001;
+      const { uniforms } = materialSA2;
+      uniforms.T.value += speed;
+      uniforms.magnitudeRed.value += speed % 255;
+      uniforms.magnitudeGreen.value += speed % 255;
+      uniforms.magnitudeBlue.value += speed % 255;
+    }, 4 / 30);
 
     const materialWave = makeWave();
     pipeline.push(materialWave);
 
-    // setInterval(() => {
-    //   const { uniforms } = materialWave;
-    //   uniforms.scale.value += 0.0001;
-    // }, 8 / 30);
+    setInterval(() => {
+      const { uniforms } = materialWave;
+      uniforms.scale.value += 0.0001;
+    }, 8 / 30);
   }
 
   composePostprocessing(pipeline);
 }
 
-const source = `IMG_${1 + Math.floor(random() * 55)}.JPG`;
+// const source = `IMG_${1 + Math.floor(random() * 55)}.JPG`;
+const source = `https://picsum.photos/200/300?random=1`;
 console.log(source);
 
 const texture = new THREE.TextureLoader().load(source, () => onLoad(texture));
