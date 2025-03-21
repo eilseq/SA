@@ -1,40 +1,59 @@
+import { CanvasCapture } from "canvas-capture";
 import * as THREE from "three";
 
 import { setContainer, setSize } from "./src/pipeline/renderer";
-import { composePostprocessing } from "./src/pipeline/composer";
+import { composer, composePostprocessing } from "./src/pipeline/composer";
 
 import { TexturePass } from "three/examples/jsm/postprocessing/TexturePass.js";
 
-import { random } from "./src/utility/random";
-
-import { makeSA2 } from "./src/shaders/sa2";
-import { makeL233 } from "./src/shaders/l233";
+import { code, random } from "./src/utility/random";
 import { makeWave } from "./src/shaders/wave";
-import { makeOverlapPass } from "./src/shaders/overlap";
+import { makeHue } from "./src/shaders/hue";
+import { makeCrt } from "./src/shaders/crt";
+import { makeCompression } from "./src/shaders/compression";
+import { makeWavemin } from "./src/shaders/wavemin";
+import { makeHueLow } from "./src/shaders/huelow";
+import { makeNTSCtoYUV } from "./src/shaders/ntscToYuv";
 
-const effectConstructors = [makeSA2, makeL233, makeWave, makeOverlapPass];
-const makeRandomEffect = () => {
-  const effectIndex = Math.floor(random() * effectConstructors.length);
-  return effectConstructors[effectIndex]();
-};
-
-const createRandomEffectChain = (size) => {
-  const chain = [];
-  for (let index = 0; index < 1 + Math.floor(random() * (size - 1)); index++) {
-    chain.push(makeRandomEffect());
-  }
-  chain.push(makeOverlapPass());
-  return chain;
-};
-
+setSize(4096, 4096); //4K portrait
+// setSize(2 * 4096, 2 * 4096); //8K portrait
 setContainer(document.body);
-// setSize(3000, 3000);
-setSize(window.innerWidth, window.innerHeight);
+// setSize(window.innerWidth, window.innerHeight);
 
-const source = `https://picsum.photos/1000`;
-console.log(source);
+const source = () => `https://picsum.photos/4096/4096`;
+// const source = () => `test${1 + Math.floor(random() * 3)}.jpeg`;
+// const source = () => `test5.png`;
+// const source = () => `https://fakeface.rest/face/view`;
+// const source = () => `JPG/IMG_${Math.floor(random() * 148)}.jpeg`;
 
-new THREE.TextureLoader().load(source, (texture) => {
-  const chain = [new TexturePass(texture)].concat(createRandomEffectChain(10));
-  composePostprocessing(chain);
+new THREE.TextureLoader().load(source(), (texture) => {
+  const fxChain = [new TexturePass(texture)];
+  // fxChain.push(makeNTSCtoYUV());
+  // if (random() > 0.35) fxChain.push(makeHue());
+  // fxChain.push(makeHueLow());
+  // if (random() > 0.35) fxChain.push(makeHue());
+  // if (random() > 0.35) fxChain.push(makeWave());
+
+  // fxChain.push(makeCrt());
+
+  fxChain.push(makeWave());
+  // fxChain.push(makeWavemin());
+  if (random() > 0.35) fxChain.push(makeWavemin());
+  fxChain.push(makeCrt());
+
+  if (random() > 0.1) fxChain.push(makeCrt());
+
+  if (random() > 0.1) fxChain.push(makeWave());
+  if (random() > 0.35) fxChain.push(makeWavemin());
+
+  // if (random() > 0.35) fxChain.push(makeCompression());
+
+  composePostprocessing(fxChain);
+
+  composer.render();
+  composer.render();
+
+  CanvasCapture.takePNGSnapshot({ name: "SA3/" + code, dpi: 300 }).then(() => {
+    setTimeout(() => window.location.reload(), 4000);
+  });
 });
