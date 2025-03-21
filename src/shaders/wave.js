@@ -39,16 +39,12 @@ const makeUniforms = () => ({
   tDiffuse: { value: null },
 });
 
-export const makeMovingWave = () => {
+export const makeWave = () => {
   const pass = new ShaderPass({
     uniforms: makeUniforms(),
     vertexShader,
     fragmentShader,
   });
-
-  setInterval(() => {
-    pass.material.uniforms.scale.value += 0.003 + Math.random() * 0.002;
-  }, 20);
 
   return pass;
 };

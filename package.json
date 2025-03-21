@@ -12,6 +12,7 @@
     "node": "19.7.0"
   },
   "devDependencies": {
+    "vite": "^5.4.2",
     "vite-plugin-zip-pack": "^1.0.5"
   }
 }

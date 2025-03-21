@@ -4,6 +4,10 @@ html, body {
   background: black;
 }
 
+body {
+  overflow: hidden;
+  height: 100vh;
+}
 canvas {
   display: block;
 }
