@@ -28,12 +28,12 @@ const makeUniforms = () => ({
   tDiffuse: { value: null },
   uColor: {
     value: new THREE.Color(
-      `hsl(${random() * 360}deg, ${random() * 100}%, ${random() * 70}%)`
+      `hsl(${random() * 360}deg, ${random() * 100}%, -${random() * 70}%)`
     ),
   },
 });
 
-export const makeHue = () => {
+export const makeHueLow = () => {
   const pass = new ShaderPass({
     uniforms: makeUniforms(),
     vertexShader,
