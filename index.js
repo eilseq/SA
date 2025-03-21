@@ -10,44 +10,50 @@ import { code, random } from "./src/utility/random";
 import { makeWave } from "./src/shaders/wave";
 import { makeHue } from "./src/shaders/hue";
 import { makeCrt } from "./src/shaders/crt";
-import { makeFeedback } from "./src/shaders/feedback";
+import { makeCompression } from "./src/shaders/compression";
 import { makeWavemin } from "./src/shaders/wavemin";
+import { makeHueLow } from "./src/shaders/huelow";
+import { makeNTSCtoYUV } from "./src/shaders/ntscToYuv";
 
+setSize(4096, 4096); //4K portrait
+// setSize(2 * 4096, 2 * 4096); //8K portrait
 setContainer(document.body);
-// setSize(4096, 4096); //4K portrait
-// setSize(3000, 3000); //4K portrait
-setSize(window.innerWidth, window.innerHeight);
+// setSize(window.innerWidth, window.innerHeight);
 
-let i = 131;
-const source = () => `IMG_${Math.floor(random() * 148)}.jpg`;
+const source = () => `https://picsum.photos/4096/4096`;
+// const source = () => `tokyo_nomad_${Math.floor(Math.random() * 20 + 1)}.jpg`;
+// const source = () => `https://fakeface.rest/face/view`;
+// const source = () => `JPG/IMG_${Math.floor(random() * 148)}.jpeg`;
+// const source = () => "kind.webp";
 
 new THREE.TextureLoader().load(source(), (texture) => {
-  composePostprocessing([
-    new TexturePass(texture),
-    // makeHue(),
-    // makeWave(),
-    makeCrt(),
-    makeWave(),
-    makeCrt(),
-    makeWavemin(),
-  ]);
-  composer.render();
-  composer.render();
-  composer.render();
-  composer.render();
-  composer.render();
-  // const srcCanvas = composer.renderer.domElement;
+  const fxChain = [new TexturePass(texture)];
+  // fxChain.push(makeNTSCtoYUV());
+  // if (random() > 0.35) fxChain.push(makeHue());
+  // fxChain.push(makeHueLow());
+  // if (random() > 0.35) fxChain.push(makeHue());
+  // if (random() > 0.35) fxChain.push(makeWave());
 
-  // new Hydra({
-  //   detectAudio: false,
-  //   // autoLoop: false,
-  // });
+  fxChain.push(makeCrt());
 
-  // s0.init({ src: srcCanvas });
+  // if (random() > 0.35) fxChain.push(makeWave());
+  fxChain.push(makeWavemin());
+  // if (random() > 0.35) fxChain.push(makeWavemin());
+  // fxChain.push(makeCrt());
 
-  // src(s0).mult(src(s0).scale(1.1)).out();
+  // if (random() > 0.35) fxChain.push(makeCrt());
 
-  // CanvasCapture.takePNGSnapshot({ name: "" + code, dpi: 300 }).then(() => {
-  //   // setTimeout(() => window.location.reload(), 4000);
-  // });
+  // if (random() > 0.35) fxChain.push(makeWave());
+  // if (random() > 0.35) fxChain.push(makeWavemin());
+
+  // if (random() > 0.35) fxChain.push(makeCompression());
+
+  composePostprocessing(fxChain);
+
+  composer.render();
+  composer.render();
+
+  CanvasCapture.takePNGSnapshot({ name: "SA3/" + code, dpi: 300 }).then(() => {
+    setTimeout(() => window.location.reload(), 4000);
+  });
 });

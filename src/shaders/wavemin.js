@@ -46,8 +46,8 @@ const phase = random();
 const makeUniforms = () => ({
   amplitude1: { value: amp },
   amplitude2: { value: amp },
-  phase1: { value: phase * 0.01 },
-  phase2: { value: phase * 0.01 },
+  phase1: { value: phase * 0.01 * random() },
+  phase2: { value: phase * 0.01 * random() },
   freq1: { value: 10 },
   freq2: { value: 10 },
   tDiffuse: { value: null },
