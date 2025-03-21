@@ -1,53 +1,33 @@
-import { CanvasCapture } from "canvas-capture";
 import * as THREE from "three";
-
-import { setContainer, setSize } from "./src/pipeline/renderer";
-import { composer, composePostprocessing } from "./src/pipeline/composer";
-
 import { TexturePass } from "three/examples/jsm/postprocessing/TexturePass.js";
 
-import { code, random } from "./src/utility/random";
-import { makeWave } from "./src/shaders/wave";
-import { makeHue } from "./src/shaders/hue";
+import { random } from "./src/utility/random";
+
+import { makeRenderer } from "./src/pipeline/renderer";
+import { makeComposer } from "./src/pipeline/composer";
+
+import { makeMovingWave } from "./src/shaders/movingWave";
 import { makeCrt } from "./src/shaders/crt";
-import { makeFeedback } from "./src/shaders/feedback";
-import { makeWavemin } from "./src/shaders/wavemin";
 
-setContainer(document.body);
-// setSize(4096, 4096); //4K portrait
-// setSize(3000, 3000); //4K portrait
-setSize(window.innerWidth, window.innerHeight);
+const source = () => `https://picsum.photos/4096/4096`;
 
-let i = 131;
-const source = () => `IMG_${Math.floor(random() * 148)}.jpg`;
+const loadTexture = () =>
+  new Promise((res, rej) => {
+    new THREE.TextureLoader().load(source(), res, () => {}, rej);
+  });
+const renderer = makeRenderer();
 
-new THREE.TextureLoader().load(source(), (texture) => {
-  composePostprocessing([
-    new TexturePass(texture),
-    // makeHue(),
-    // makeWave(),
-    makeCrt(),
-    makeWave(),
-    makeCrt(),
-    makeWavemin(),
-  ]);
-  composer.render();
-  composer.render();
-  composer.render();
-  composer.render();
-  composer.render();
-  // const srcCanvas = composer.renderer.domElement;
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-  // new Hydra({
-  //   detectAudio: false,
-  //   // autoLoop: false,
-  // });
+const { composePostprocessing } = makeComposer(renderer);
+const texturePass = new TexturePass();
+const fxs = [texturePass, makeCrt(), makeMovingWave()];
+composePostprocessing(fxs);
 
-  // s0.init({ src: srcCanvas });
-
-  // src(s0).mult(src(s0).scale(1.1)).out();
-
-  // CanvasCapture.takePNGSnapshot({ name: "" + code, dpi: 300 }).then(() => {
-  //   // setTimeout(() => window.location.reload(), 4000);
-  // });
-});
+const updateTexture = async () => {
+  const texture = await loadTexture();
+  texturePass.map = texture;
+  setTimeout(updateTexture, 120000 / Math.floor(1 + random() * 8));
+};
+updateTexture();

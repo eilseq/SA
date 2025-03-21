@@ -1,8 +1,5 @@
-import * as seedrandom from "seedrandom";
+import seedrandom from "seedrandom";
 
-export const code = Date.now();
-console.log(code);
+const code = Date.now();
 
-export const random = Math.random;
-// seedrandom(code);
-// export const random = seedrandom(1680498092883);
+export const random = seedrandom(code);

@@ -49,17 +49,20 @@ const fragmentShader = `
       vec2 uv = vUv;
       vec3 color = texture2D(tDiffuse, vUv).rgb;
 
-      // uv += vec2(
-      //   0.1 * sin(0.01 * scale + uv.y * 10.1) * color.r,
-      //   0.1 * cos(0.01 * scale + uv.x * 10.1) * color.g
-      // );
-      // color = texture2D(tDiffuse, uv).rgb;
+      uv += vec2(
+        mod(uv.y, fract(color.r)),
+        0.0
+      );
+      uv -= vec2(
+        0.0,
+        mod(uv.x, fract(color.r))
+      );
+      color = texture2D(tDiffuse, uv).rgb;
 
       color *= RGBtoPAL;
-      // color.r *= 1.4 * time * fract(0.1 + uv.y * 10.1);
-      // color.r *= 1.4 * time;
-      color.b /= ${random() * 1.4} * fract(1.0 + uv.y * 1000.1);
-      color.g *= 0.4 * fract(0.1 + uv.y * 10.1);
+      color.r *= 1.4 ;
+      color.b = fract(sin(time)) * fract(1.0 + uv.y / uv.x * time * 100.0);
+      // color.g += fract(0.1 + uv.y * 10.1);
       color.g *= 2.5;
       color *= PALtoRGB;
 
@@ -80,12 +83,9 @@ export const makeCrt = () => {
     fragmentShader,
   });
 
-  const update = () => {
-    pass.uniforms.scale.value += random();
-    pass.uniforms.time.value += random();
-    requestAnimationFrame(update);
-  };
-  update();
+  setInterval(() => {
+    pass.material.uniforms.time.value -= 0.01;
+  }, 1000 / 10);
 
   return pass;
 };

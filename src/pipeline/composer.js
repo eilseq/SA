@@ -1,20 +1,21 @@
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 
-import { getRenderer } from "./renderer";
+export const makeComposer = (renderer) => {
+  const composer = new EffectComposer(renderer);
 
-export const composer = new EffectComposer(getRenderer());
+  const animate = () => {
+    requestAnimationFrame(animate);
+    composer.render();
+  };
+  animate();
 
-export const composePostprocessing = (passes) => {
-  composer.reset();
-  for (const pass of passes) {
-    composer.addPass(pass);
-  }
-
-  return composer;
+  return {
+    composePostprocessing: (passes) => {
+      composer.reset();
+      for (const pass of passes) {
+        composer.addPass(pass);
+      }
+    },
+    animate,
+  };
 };
-
-// export const animate = () => {
-//   composer.render();
-//   requestAnimationFrame(animate);
-// };
-// animate();

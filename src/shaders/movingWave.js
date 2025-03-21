@@ -35,7 +35,7 @@ const fragmentShader = `
 `;
 
 const makeUniforms = () => ({
-  scale: { value: random() * 1 + 0.01 },
+  scale: { value: random() * 0.1 + 0.01 },
   tDiffuse: { value: null },
 });
 
