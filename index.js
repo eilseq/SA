@@ -20,11 +20,7 @@ setSize(4096, 4096); //4K portrait
 setContainer(document.body);
 // setSize(window.innerWidth, window.innerHeight);
 
-const source = () => `https://picsum.photos/4096/4096`;
-// const source = () => `test${1 + Math.floor(random() * 3)}.jpeg`;
-// const source = () => `test5.png`;
-// const source = () => `https://fakeface.rest/face/view`;
-// const source = () => `JPG/IMG_${Math.floor(random() * 148)}.jpeg`;
+const source = () => `http://localhost:3000/random-image`;
 
 new THREE.TextureLoader().load(source(), (texture) => {
   const fxChain = [new TexturePass(texture)];
