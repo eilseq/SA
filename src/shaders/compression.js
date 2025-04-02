@@ -1,21 +1,20 @@
 import { addPass } from "../utility/shaderPass";
+import { random } from "../utility/random";
 
-export const addCompression = (fxChain, initUniforms) =>
-  addPass(
-    fxChain,
-    initUniforms,
+export const addCompression1 = (fxChain) => {
+  const uniforms = {
+    amount: random(),
+  };
+  return addCompression(fxChain, uniforms);
+};
 
-    // uniforms
-    {
-      amount: { value: 0 },
-    },
+export const addCompression = (fxChain, uniforms) =>
+  addPass(fxChain, uniforms, fragmentShader);
 
-    // fragmentShader
-    `
+const fragmentShader = `
       uniform sampler2D tDiffuse;
+      uniform float amount;
       varying vec2 vUv;
-
-      float amount = 1.0;
 
       void main() {
         vec4 color = texture2D(tDiffuse, vUv);
@@ -26,5 +25,4 @@ export const addCompression = (fxChain, initUniforms) =>
 
         gl_FragColor = vec4(rgb, color.a);
       }
-    `
-  );
+    `;

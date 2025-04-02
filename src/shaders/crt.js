@@ -1,21 +1,23 @@
 import { addPass } from "../utility/shaderPass";
+import { random } from "../utility/random";
 
-export const addCrt = (fxChain, initUniforms) =>
-  addPass(
-    fxChain,
-    initUniforms,
+export const addCrt1 = (fxChain) => {
+  const uniforms = {
+    tDiffuse: null,
+    scale: random(),
+    bDist: random() * 1.4,
+    time: random(),
+  };
+  return addCrt(fxChain, uniforms);
+};
 
-    // uniforms
-    {
-      scale: { value: 0.01 },
-      time: { value: 1 },
-      tDiffuse: { value: null },
-    },
+export const addCrt = (fxChain, uniforms) =>
+  addPass(fxChain, uniforms, fragmentShader);
 
-    // fragmentShader
-    `
+const fragmentShader = `
       uniform float scale;
       uniform float time;
+      uniform float bDist;
 
       uniform sampler2D tDiffuse;
       varying vec2 vUv;
@@ -62,12 +64,11 @@ export const addCrt = (fxChain, initUniforms) =>
           color *= RGBtoPAL;
           // color.r *= 1.4 * time * fract(0.1 + uv.y * 10.1);
           // color.r *= 1.4 * time;
-          color.b /= fract(1.0 + uv.y * 1000.1);
+          color.b /= bDist * fract(1.0 + uv.y * 1000.1);
           color.g *= 0.4 * fract(0.1 + uv.y * 10.1);
           color.g *= 2.5;
           color *= PALtoRGB;
 
           gl_FragColor = vec4(color, 1.0);
       }
-    `
-  );
+    `;

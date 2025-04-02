@@ -9,3 +9,9 @@ export const resetRandom = () => {
 };
 
 export const random = () => randomInstance.float(0, 1);
+
+export const maybe = (callback, probability = 0.35) => {
+  if (random() > probability) {
+    callback();
+  }
+};

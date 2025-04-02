@@ -1,21 +1,19 @@
-import { HSLtoColor } from "../utility/conversion";
 import { addPass } from "../utility/shaderPass";
+import { makeColorFromHSL } from "../utility/colors";
+import { random } from "../utility/random";
 
-export const addHue = (fxChain, initUniforms) =>
-  addPass(
-    fxChain,
-    initUniforms,
+export const addHue1 = (fxChain) => {
+  const uniforms = {
+    tDiffuse: null,
+    color: makeColorFromHSL(random(), random(), random()),
+  };
+  return addHue(fxChain, uniforms);
+};
 
-    // uniforms
-    {
-      tDiffuse: { value: null },
-      color: {
-        value: HSLtoColor(180, 0, 0),
-      },
-    },
+export const addHue = (fxChain, uniforms) =>
+  addPass(fxChain, uniforms, fragmentShader);
 
-    // fragmentShader
-    `
+const fragmentShader = `
       uniform sampler2D tDiffuse;
       uniform vec3 color;
       varying vec2 vUv;
@@ -25,5 +23,4 @@ export const addHue = (fxChain, initUniforms) =>
           texel.xyz /= color;
           gl_FragColor = texel;
       }
-    `
-  );
+    `;

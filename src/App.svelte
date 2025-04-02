@@ -8,13 +8,13 @@
 
 <style>
   main {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100vw;
     height: 100vh;
-    padding: 10px;
-    box-sizing: border-box;
+    background-color: black;
+    margin: 0;
+    padding: 0;
   }
 </style>

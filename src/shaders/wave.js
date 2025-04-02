@@ -1,24 +1,56 @@
 import { addPass } from "../utility/shaderPass";
+import { random } from "../utility/random";
 
-export const addWave = (fxChain, initUniforms) =>
-  addPass(
-    fxChain,
-    initUniforms,
+export const addWave1 = (fxChain) => {
+  const uniforms = {
+    tDiffuse: null,
+    mode: 0,
+    amplitude1: random(),
+    amplitude2: random(),
+    phase1: random(),
+    phase2: random(),
+    freq1: random() * 10,
+    freq2: random() * 10,
+  };
+  return addWave(fxChain, uniforms);
+};
 
-    // uniforms
-    {
-      mode: { value: 0 },
-      amplitude1: { value: 0 },
-      amplitude2: { value: 0 },
-      phase1: { value: 0 },
-      phase2: { value: 0 },
-      freq1: { value: 0 },
-      freq2: { value: 0 },
-      tDiffuse: { value: null },
-    },
+export const addWave2 = (fxChain) => {
+  const amp = random() * 0.1;
+  const phase = random();
+  const uniforms = {
+    tDiffuse: null,
+    mode: 1,
+    amplitude1: amp,
+    amplitude2: amp,
+    phase1: phase * 0.01 * random(),
+    phase2: phase * 0.01 * random(),
+    freq1: 10,
+    freq2: 10,
+  };
+  return addWave(fxChain, uniforms);
+};
 
-    // fragmentShader
-    `
+export const addWave3 = (fxChain) => {
+  const amp = random() * 0.1;
+  const phase = random();
+  const uniforms = {
+    tDiffuse: { value: null },
+    mode: 2,
+    amplitude1: amp,
+    amplitude2: amp,
+    phase1: phase * 0.01 * random(),
+    phase2: phase * 0.01 * random(),
+    freq1: 2,
+    freq2: 10,
+  };
+  return addWave(fxChain, uniforms);
+};
+
+export const addWave = (fxChain, uniforms) =>
+  addPass(fxChain, uniforms, fragmentShader);
+
+const fragmentShader = `
       uniform int mode;
 
       uniform float amplitude1;
@@ -67,5 +99,4 @@ export const addWave = (fxChain, initUniforms) =>
         vec3 distorted = texture2D(tDiffuse, uv).rgb;
         gl_FragColor = vec4(distorted, 1.0);
       }
-    `
-  );
+    `;

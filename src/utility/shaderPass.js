@@ -1,6 +1,6 @@
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-const defaultVertexShader = `
+const vertexShader = `
   varying vec2 vUv;
 
   void main() {
@@ -9,37 +9,17 @@ const defaultVertexShader = `
   }
 `;
 
-const makeShaderPass = ({ uniforms, vertexShader, fragmentShader }) => {
+export const addPass = (fxChain, uniforms, fragmentShader) => {
+  for (const key in uniforms) {
+    uniforms[key] = { value: uniforms[key] };
+  }
+
   const pass = new ShaderPass({
     uniforms,
     vertexShader,
     fragmentShader,
   });
 
-  const updateUniforms = (newUniforms) => {
-    for (const key in newUniforms) {
-      pass.uniforms[key] = { value: newUniforms[key] };
-    }
-  };
-
-  return {
-    pass,
-    updateUniforms,
-  };
-};
-
-export const addPass = (fxChain, initUniforms, uniforms, fragmentShader) => {
-  const { pass, updateUniforms } = makeShaderPass({
-    uniforms,
-    vertexShader: defaultVertexShader,
-    fragmentShader,
-  });
-
-  if (initUniforms) {
-    updateUniforms(initUniforms);
-  }
-
   fxChain.push(pass);
-
-  return { updateUniforms };
+  return pass;
 };
